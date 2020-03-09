@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include <iostream>
-#define DATALENGTH 15
+#define DATALENGTH 16
 
 int InsertionAscSort(int* data,int length)
 {
@@ -18,7 +18,6 @@ int InsertionAscSort(int* data,int length)
 		}
 		data[j+1] = insertData;
 	}
-	
 	return 0;
 }
 
@@ -35,7 +34,6 @@ int InsertionDecSort(int* data, int length)
 		}
 		data[j + 1] = insertData;
 	}
-
 	return 0;
 }
 
@@ -51,46 +49,84 @@ int AddBINARY(int* a, int* b,int dataLength,int* c)
 	return 0;
 }
 
-int Merge(int* A, int p, int q, int r)
+int mergedata(int* data,int start, int mid, int end)
 {
-	int B[DATALENGTH] = {};
-	int i = 0, j = q,index = 0;
-	while (i <= p && j <= r && index < DATALENGTH)
-	{
-		if (A[i] <= A[j])
-		{
-			B[index] = A[i];
-			i++;
-		}
-		else
-		{
-			B[index] = A[j];
-			j++;
-		}
-		index++;
-	}
-	if (i <= p)
-	{
-		for (; i <= p; i++)
-		{
-			B[index] = A[i];
-			index++;
-		}
-	}
-	else if (j <= r)
-	{
-		for (; j <= r; j++)
-		{
-			B[index] = A[j];
-			index++;
-		}
-	}
+	int i = start;
+	int j = mid + 1;
+	int k = 0;
+	int* copy = new int[end];
 
-	for (int k = 0; k < DATALENGTH; k++)
+	while (i <= mid && j <= end)
 	{
-		std::cout << B[k] << std::endl;
+		if (data[i] <= data[j])
+		{
+			copy[k++] = data[j++];
+		}
+		else if (data[i] > data[j])
+		{
+			copy[k++] = data[i++];
+		}
 	}
+	while (i <= mid)
+	{
+		copy[k++] = data[i++];
+	}
+	while (j <= end)
+	{
+		copy[k++] = data[j++];
+	}
+	for (int i = 0; i < k; ++i)
+		data[start + i] = copy[i];
 
+	delete[] copy;
+	return 0;
+}
+
+int  mergesort(int* data,int start, int end)
+{
+	if (start == end)
+	{
+		return 0;
+	}
+	if (start < end)
+	{
+		//int mid = ((end - start) >> 1) + start;
+		int mid = ((end - start) /2) + start;
+		mergesort(data, start, mid);
+		mergesort(data, mid + 1 , end);
+		mergedata(data,start, mid, end);
+	}
+	return 0;
+}
+
+void mergeSort(int* data, int length)
+{
+	if (data == nullptr || length <= 0)
+		return;
+	mergesort(data, 0, length - 1);
+
+}
+
+int binarySearch(int* data, int start, int end, int searchData, int* index)
+{
+	if (end - start == 0)
+	{
+		*index = start;
+		return 0;
+	}
+	int middle = (end - start) / 2 + start;
+	if (searchData > data[middle])
+	{
+		binarySearch(data, middle + 1, end, searchData, index);
+	}
+	else if (searchData < data[middle])
+	{
+		binarySearch(data, start, middle - 1, searchData, index);
+	}
+	else
+	{
+		*index = middle;
+	}
 	return 0;
 }
 
@@ -131,11 +167,15 @@ int main()
 	//std::cout << std::endl;
 
 	
-	////Merge
-	int dataA[DATALENGTH] = { 8,15,99,101,333,335,387,999,2,6,9,155,444,555,888};
+	////MergeSort
+	int dataA[DATALENGTH] = { 18,15,969,1081,333,3535,37,99,2,6,9,155,444,555,6,-5};
 	//int dataA[DATALENGTH] = { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
-	Merge(dataA, 7, 8, DATALENGTH-1);
-
+	//Merge(dataA, 7, 8, DATALENGTH-1);
+	mergeSort(dataA,DATALENGTH);
+	for (int i = 0; i < DATALENGTH; i++)
+	{
+		std::cout << dataA[i] << std::endl;
+	}
 	system("pause");
 
     return 0;
