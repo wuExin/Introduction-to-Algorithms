@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include <iostream>
+#include <vector>
 #define DATALENGTH 16
 
 int InsertionAscSort(int* data,int length)
@@ -60,11 +61,11 @@ int mergedata(int* data,int start, int mid, int end)
 	{
 		if (data[i] <= data[j])
 		{
-			copy[k++] = data[j++];
+			copy[k++] = data[i++];
 		}
 		else if (data[i] > data[j])
-		{
-			copy[k++] = data[i++];
+		{	
+			copy[k++] = data[j++];
 		}
 	}
 	while (i <= mid)
@@ -109,10 +110,14 @@ void mergeSort(int* data, int length)
 
 int binarySearch(int* data, int start, int end, int searchData, int* index)
 {
-	if (end - start == 0)
+	if (end - start <= 0)
 	{
-		*index = start;
-		return 0;
+		if (searchData == data[start])
+		{
+			*index = start;
+			return 0;
+		}	
+		return -1;
 	}
 	int middle = (end - start) / 2 + start;
 	if (searchData > data[middle])
@@ -126,6 +131,28 @@ int binarySearch(int* data, int start, int end, int searchData, int* index)
 	else
 	{
 		*index = middle;
+		return 0;
+	}
+	
+}
+
+int findSum(int* data,int dataLength, int searchData, std::vector<int>& index1,std::vector<int>& index2)  // O(n*lg(n))
+{
+	mergeSort(data, dataLength);  //O(n*lg(n))
+	for (int i = 0; i < dataLength; i++)
+	{
+		std::cout << data[i] << std::endl;
+	}
+	for (int i = 0; i < dataLength; i++)
+	{
+		int temp = data[i];
+		int index;
+		int ret = binarySearch(data, i + 1, dataLength - 1, searchData - temp, &index);
+		if (ret == 0)
+		{
+			index1.push_back(data[i]);
+			index2.push_back(data[index]);
+		}
 	}
 	return 0;
 }
@@ -168,14 +195,36 @@ int main()
 
 	
 	////MergeSort
-	int dataA[DATALENGTH] = { 18,15,969,1081,333,3535,37,99,2,6,9,155,444,555,6,-5};
-	//int dataA[DATALENGTH] = { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
-	//Merge(dataA, 7, 8, DATALENGTH-1);
-	mergeSort(dataA,DATALENGTH);
-	for (int i = 0; i < DATALENGTH; i++)
+	//int dataA[DATALENGTH] = { 18,15,969,1081,333,3535,37,99,2,6,9,155,444,555,6,-5};
+	////int dataA[DATALENGTH] = { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
+	//mergeSort(dataA,DATALENGTH);
+	//for (int i = 0; i < DATALENGTH; i++)
+	//{
+	//	std::cout << dataA[i] << std::endl;
+	//}
+
+
+	////binarySearch
+	//int dataA[DATALENGTH] = { 15,18,99,101,133,355,376,499,524,600,791,1155,1444,1555,2326,4444 };   //order
+	//int index;
+	//int ret = binarySearch(dataA, 0, DATALENGTH - 1, 1, &index);
+	//if (ret == 0)
+	//{
+	//	std::cout << "index:" << index << std::endl;
+	//}
+
+	//FindSum
+	int dataA[DATALENGTH] = { 18,15,99,101,133,355,376,499,524,600,791,441,1444,1555,2326,187 };   //order
+	std::vector<int> index1;
+	std::vector<int> index2;
+	int sum = 542;
+	findSum(dataA, DATALENGTH, sum, index1, index2);
+	std::cout << "sum:" << sum << std::endl;
+	for (int i = 0; i < index1.size(); i++)
 	{
-		std::cout << dataA[i] << std::endl;
+		std::cout << "index:" << index1.at(i) << "  " << "index2:" << index2.at(i) << std::endl;
 	}
+
 	system("pause");
 
     return 0;
