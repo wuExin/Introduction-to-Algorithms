@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include <iostream>
 #include <vector>
-#define DATALENGTH 16
+#define DATALENGTH 6
 
 int InsertionAscSort(int* data,int length)
 {
@@ -157,6 +157,69 @@ int findSum(int* data,int dataLength, int searchData, std::vector<int>& index1,s
 	return 0;
 }
 
+
+int inversiondata(int* data, int start, int mid, int end, int& number)
+{
+	int i = start;
+	int j = mid + 1;
+	int k = 0;
+	int* copy = new int[end];
+
+	while (i <= mid && j <= end)
+	{
+		int A = data[i];
+		int B = data[j];
+		if (data[i] <= data[j])
+		{
+			copy[k++] = data[i++];
+		}
+		else if (data[i] > data[j])
+		{	
+			number = number + mid - i + 1;   //**************************
+			copy[k++] = data[j++];			
+		}
+	}
+	while (i <= mid)
+	{
+		copy[k++] = data[i++];
+	}
+	while (j <= end)
+	{
+		copy[k++] = data[j++];
+	}
+	for (int i = 0; i < k; ++i)
+		data[start + i] = copy[i];
+
+	delete[] copy;
+	return 0;
+}
+
+int  inversion(int* data, int start, int end, int& number)
+{
+	if (start == end)
+	{
+		return 0;
+	}
+	if (start < end)
+	{
+		//int mid = ((end - start) >> 1) + start;
+		int mid = ((end - start) / 2) + start;
+		inversion(data, start, mid, number);
+		inversion(data, mid + 1, end, number);
+		inversiondata(data, start, mid, end,number);
+	}
+	return 0;
+}
+
+
+int Inversion(int* data, int length,int& number)
+{
+	if (data == nullptr || length <= 0)
+		return -1 ;
+	inversion(data, 0, length - 1,number);
+	return 0;
+}
+
 int main()
 {
 	////InsertionAscSort   InsertionDecSort
@@ -213,18 +276,24 @@ int main()
 	//	std::cout << "index:" << index << std::endl;
 	//}
 
-	//FindSum
-	int dataA[DATALENGTH] = { 18,15,99,101,133,355,376,499,524,600,791,441,1444,1555,2326,187 };   //order
-	std::vector<int> index1;
-	std::vector<int> index2;
-	int sum = 542;
-	findSum(dataA, DATALENGTH, sum, index1, index2);
-	std::cout << "sum:" << sum << std::endl;
-	for (int i = 0; i < index1.size(); i++)
-	{
-		std::cout << "index:" << index1.at(i) << "  " << "index2:" << index2.at(i) << std::endl;
-	}
+	////FindSum
+	//int dataA[DATALENGTH] = { 18,15,99,101,133,355,376,499,524,600,791,441,1444,1555,2326,187 };   
+	//std::vector<int> index1;
+	//std::vector<int> index2;
+	//int sum = 542;
+	//findSum(dataA, DATALENGTH, sum, index1, index2);
+	//std::cout << "sum:" << sum << std::endl;
+	//for (int i = 0; i < index1.size(); i++)
+	//{
+	//	std::cout << "index:" << index1.at(i) << "  " << "index2:" << index2.at(i) << std::endl;
+	//}
 
+
+	//Inversion
+	int dataA[DATALENGTH] = { 2,3,8,0,6,1 };   //order
+	int number = 0;
+	Inversion(dataA, DATALENGTH, number);
+	std::cout << "number:" << number << std::endl;
 	system("pause");
 
     return 0;
